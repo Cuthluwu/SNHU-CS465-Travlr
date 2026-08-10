@@ -1,0 +1,54 @@
+{
+  "info": {
+    "_postman_id": "b7bbec68-3f69-4aec-9ca4-module7travlr",
+    "name": "Travlr Module 7 Security",
+    "description": "Module Seven authentication and protected CRUD endpoint tests for the Travlr Getaways application.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key":"baseUrl","value":"http://localhost:3000/api"},
+    {"key":"name","value":"Madison Parker"},
+    {"key":"email","value":"madison.module7@travlr.test"},
+    {"key":"password","value":"TravlrModule7!"},
+    {"key":"token","value":""},
+    {"key":"testTripCode","value":"M7SECURE1"}
+  ],
+  "item": [
+    {
+      "name": "1 - Register Mock Admin User",
+      "event": [{"listen":"test","script":{"exec":["pm.test('Registration succeeds or user already exists', function () { pm.expect([200, 409]).to.include(pm.response.code); });","if (pm.response.code === 200) { const body = pm.response.json(); pm.collectionVariables.set('token', body.token); }"]}}],
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/x-www-form-urlencoded"}],"body":{"mode":"urlencoded","urlencoded":[{"key":"name","value":"{{name}}","type":"text"},{"key":"email","value":"{{email}}","type":"text"},{"key":"password","value":"{{password}}","type":"text"}]},"url":"{{baseUrl}}/register"}
+    },
+    {
+      "name": "2 - Login Mock Admin User",
+      "event": [{"listen":"test","script":{"exec":["pm.test('Login returns HTTP 200', function () { pm.response.to.have.status(200); });","const body = pm.response.json();","pm.expect(body).to.have.property('token');","pm.collectionVariables.set('token', body.token);"]}}],
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/x-www-form-urlencoded"}],"body":{"mode":"urlencoded","urlencoded":[{"key":"email","value":"{{email}}","type":"text"},{"key":"password","value":"{{password}}","type":"text"}]},"url":"{{baseUrl}}/login"}
+    },
+    {"name":"3 - Public GET Trips","request":{"method":"GET","url":"{{baseUrl}}/trips"}},
+    {
+      "name":"4 - Clean Up Existing Test Trip",
+      "event":[{"listen":"test","script":{"exec":["pm.test('Cleanup is safe to repeat', function () { pm.expect([200, 404]).to.include(pm.response.code); });"]}}],
+      "request":{"auth":{"type":"bearer","bearer":[{"key":"token","value":"{{token}}","type":"string"}]},"method":"DELETE","url":"{{baseUrl}}/trips/{{testTripCode}}"}
+    },
+    {
+      "name":"5 - Protected POST Without Token - Expect 401",
+      "event":[{"listen":"test","script":{"exec":["pm.test('Unauthenticated POST is rejected', function () { pm.response.to.have.status(401); });"]}}],
+      "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"code\": \"{{testTripCode}}\",\n  \"name\": \"Module Seven Security Test\",\n  \"length\": \"4 nights / 5 days\",\n  \"start\": \"2026-09-15\",\n  \"resort\": \"Coral Sands, 5 stars\",\n  \"perPerson\": \"1499.00\",\n  \"image\": \"reef1.jpg\",\n  \"description\": \"Protected endpoint test record for Module Seven.\"\n}"},"url":"{{baseUrl}}/trips"}
+    },
+    {
+      "name":"6 - Protected POST With JWT",
+      "event":[{"listen":"test","script":{"exec":["pm.test('Authenticated POST creates the trip', function () { pm.response.to.have.status(201); });"]}}],
+      "request":{"auth":{"type":"bearer","bearer":[{"key":"token","value":"{{token}}","type":"string"}]},"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"code\": \"{{testTripCode}}\",\n  \"name\": \"Module Seven Security Test\",\n  \"length\": \"4 nights / 5 days\",\n  \"start\": \"2026-09-15\",\n  \"resort\": \"Coral Sands, 5 stars\",\n  \"perPerson\": \"1499.00\",\n  \"image\": \"reef1.jpg\",\n  \"description\": \"Protected endpoint test record for Module Seven.\"\n}"},"url":"{{baseUrl}}/trips"}
+    },
+    {
+      "name":"7 - Protected PUT With JWT",
+      "event":[{"listen":"test","script":{"exec":["pm.test('Authenticated PUT updates the trip', function () { pm.response.to.have.status(201); });"]}}],
+      "request":{"auth":{"type":"bearer","bearer":[{"key":"token","value":"{{token}}","type":"string"}]},"method":"PUT","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"code\": \"{{testTripCode}}\",\n  \"name\": \"Module Seven Authenticated Update\",\n  \"length\": \"4 nights / 5 days\",\n  \"start\": \"2026-09-15\",\n  \"resort\": \"Coral Sands, 5 stars\",\n  \"perPerson\": \"1499.00\",\n  \"image\": \"reef1.jpg\",\n  \"description\": \"This change verifies that the JWT permits an authorized admin update.\"\n}"},"url":"{{baseUrl}}/trips/{{testTripCode}}"}
+    },
+    {
+      "name":"8 - Protected DELETE With JWT",
+      "event":[{"listen":"test","script":{"exec":["pm.test('Authenticated DELETE removes the test trip', function () { pm.response.to.have.status(200); });"]}}],
+      "request":{"auth":{"type":"bearer","bearer":[{"key":"token","value":"{{token}}","type":"string"}]},"method":"DELETE","url":"{{baseUrl}}/trips/{{testTripCode}}"}
+    }
+  ]
+}

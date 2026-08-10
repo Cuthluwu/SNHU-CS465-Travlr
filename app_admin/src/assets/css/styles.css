@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+  background: #f8f9fa;
+  font-family: Arial, Helvetica, sans-serif;
+}
+main { min-height: calc(100vh - 72px); }
+.card-img-top { height: 180px; object-fit: cover; }
+.form-shell { max-width: 760px; margin: 0 auto; }
+.description-preview p:last-child { margin-bottom: 0; }
