@@ -1,0 +1,112 @@
+name: Build CS 465 module branches
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-module-branches.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-history:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out completed portfolio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Preserve shared image assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/main-assets/public /tmp/main-assets/angular
+          cp -a public/images/. /tmp/main-assets/public/
+          if [ -d app_admin/src/assets/images ]; then
+            cp -a app_admin/src/assets/images/. /tmp/main-assets/angular/
+          fi
+
+      - name: Build historical module snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          declare -A TITLES
+          TITLES[module1]="Express foundation and static customer website"
+          TITLES[module2]="MVC routing, controllers, Handlebars views, and partials"
+          TITLES[module3]="JSON-driven trip data and reusable Handlebars rendering"
+          TITLES[module4]="MongoDB, Mongoose models, connection, and database seeding"
+          TITLES[module5]="RESTful API integration and API-backed trip data"
+          TITLES[module6]="Angular administrator SPA, services, components, and CRUD"
+          TITLES[module7]="Registration, login, Passport, JWT, and protected endpoints"
+
+          for branch in module1 module2 module3 module4 module5 module6 module7; do
+            rm -rf "/tmp/source-$branch" "/tmp/snapshot-$branch"
+            git clone --quiet --depth 1 --branch "$branch" https://github.com/Cuthluwu/SNHU.git "/tmp/source-$branch"
+            SOURCE="/tmp/source-$branch/CS465-Travlr-Getaways-Madison-Parker/travlr"
+            test -d "$SOURCE"
+            mkdir -p "/tmp/snapshot-$branch"
+            rsync -a \
+              --exclude='.git/' \
+              --exclude='.env' \
+              --exclude='README.md' \
+              --exclude='node_modules/' \
+              "$SOURCE/" "/tmp/snapshot-$branch/"
+
+            mkdir -p "/tmp/snapshot-$branch/public/images"
+            cp -a /tmp/main-assets/public/. "/tmp/snapshot-$branch/public/images/"
+
+            if [ -d "/tmp/snapshot-$branch/app_admin" ]; then
+              mkdir -p "/tmp/snapshot-$branch/app_admin/src/assets/images"
+              cp -a /tmp/main-assets/angular/. "/tmp/snapshot-$branch/app_admin/src/assets/images/"
+            fi
+
+            cat > "/tmp/snapshot-$branch/README.md" <<EOF
+# Travlr Getaways — ${branch^}
+
+**Madison Parker · SNHU CS 465: Full Stack Development**
+
+> Historical course snapshot. The completed portfolio is maintained on the [main branch](https://github.com/Cuthluwu/SNHU-CS465-Travlr).
+
+## Module Focus
+
+**${TITLES[$branch]}**
+
+This branch preserves the application at the corresponding stage of development so the progression of the architecture can be reviewed alongside the completed project. Later modules intentionally contain additional layers that are not present here.
+
+## Development Progression
+
+| Branch | Focus |
+|---|---|
+| module1 | Express foundation and static customer website |
+| module2 | MVC organization and Handlebars templates |
+| module3 | JSON-driven dynamic trip rendering |
+| module4 | MongoDB and Mongoose persistence |
+| module5 | REST API integration |
+| module6 | Angular administrator SPA and CRUD |
+| module7 | JWT authentication and protected endpoints |
+
+For the final architecture, security verification, setup instructions, and Module Eight reflection, use the **main** or **final** branch.
+EOF
+
+            git switch --detach main >/dev/null
+            temp_branch="build-$branch"
+            git checkout --orphan "$temp_branch" >/dev/null
+            git rm -rf . >/dev/null 2>&1 || true
+            rsync -a "/tmp/snapshot-$branch/" ./
+            rm -rf .github
+            git add .
+            git commit -m "Preserve CS 465 ${branch} development snapshot" >/dev/null
+            git push --force origin "HEAD:refs/heads/$branch"
+            git switch main >/dev/null
+            git branch -D "$temp_branch" >/dev/null
+          done
+
+      - name: Mirror completed portfolio to final branch
+        shell: bash
+        run: git push --force origin main:refs/heads/final
