@@ -1,0 +1,113 @@
+name: Import CS 465 project files
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-project:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out portfolio repository
+        uses: actions/checkout@v4
+
+      - name: Preserve polished README
+        run: cp README.md /tmp/README.md
+
+      - name: Copy the completed CS 465 source from the earlier repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet --depth 1 --branch final https://github.com/Cuthluwu/SNHU.git /tmp/old-course
+          SOURCE="/tmp/old-course/CS465-Travlr-Getaways-Madison-Parker/travlr"
+          test -d "$SOURCE"
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='README.md' \
+            --exclude='.env' \
+            --exclude='node_modules/' \
+            "$SOURCE/" ./
+          cp /tmp/README.md README.md
+          rm -f .env
+
+      - name: Copy the Module Eight reflection into portfolio docs
+        shell: bash
+        run: |
+          mkdir -p docs
+          cp /tmp/old-course/MODULE8_JOURNAL_MADISON_PARKER.md docs/MODULE8_JOURNAL_MADISON_PARKER.md
+
+      - name: Restore the original Travlr image assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_LOGO="93f77efb95e53731c9fc983e24df75b8a865e3e66ceca9881cb72e7f9f935a86"
+          EXPECTED_BODY="e6ae72671b539ac0944e9b128bd2a5ca50c36b8f19022a58469bdd003e3569b2"
+          EXPECTED_REEF1="113a4ef1d8bd9cfdc4262a3b4946b7628169f4f76b4d34b75d989f936bf2fbcb"
+          EXPECTED_REEF2="3186b77407f17f2d78ac4d1326408ad1eb11bc8a994f8b36e07703c7bb6784b3"
+          EXPECTED_REEF3="601c84840f31437c8763f9d5e459b870d1352c94de62808273262a647bb2ee5d"
+
+          REPOS=(
+            "rodocentcs/CS465---TravlrGetaways"
+            "kanemiller100/cs465-travlr-getaways"
+            "bdpetersen13/Travlr-Getaways-Web-Application"
+            "JadenKDev/cs465-travlr-getaways"
+            "nicholasgreen4/cs465-fullstack"
+          )
+
+          found=""
+          for repo in "${REPOS[@]}"; do
+            rm -rf /tmp/assets-source
+            if ! git clone --quiet --depth 1 "https://github.com/${repo}.git" /tmp/assets-source; then
+              continue
+            fi
+            while IFS= read -r logo; do
+              dir="$(dirname "$logo")"
+              [ -f "$dir/bg-body.jpg" ] || continue
+              [ -f "$dir/reef1.jpg" ] || continue
+              [ -f "$dir/reef2.jpg" ] || continue
+              [ -f "$dir/reef3.jpg" ] || continue
+              [ "$(sha256sum "$logo" | awk '{print $1}')" = "$EXPECTED_LOGO" ] || continue
+              [ "$(sha256sum "$dir/bg-body.jpg" | awk '{print $1}')" = "$EXPECTED_BODY" ] || continue
+              [ "$(sha256sum "$dir/reef1.jpg" | awk '{print $1}')" = "$EXPECTED_REEF1" ] || continue
+              [ "$(sha256sum "$dir/reef2.jpg" | awk '{print $1}')" = "$EXPECTED_REEF2" ] || continue
+              [ "$(sha256sum "$dir/reef3.jpg" | awk '{print $1}')" = "$EXPECTED_REEF3" ] || continue
+              found="$dir"
+              break 2
+            done < <(find /tmp/assets-source -type f -name 'logo.png')
+          done
+
+          if [ -z "$found" ]; then
+            echo "Could not locate a byte-for-byte match for the supplied Travlr starter images."
+            exit 1
+          fi
+
+          mkdir -p public/images app_admin/src/assets/images
+          cp -a "$found/." public/images/
+          cp -a "$found/." app_admin/src/assets/images/
+
+      - name: Verify secrets stay out of version control
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -f .env
+          grep -q '^\.env$' .gitignore || printf '\n.env\n' >> .gitignore
+          grep -q 'node_modules' .gitignore || printf 'node_modules/\napp_admin/node_modules/\n' >> .gitignore
+
+      - name: Commit imported portfolio source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --cached --quiet; then
+            echo "No source changes to commit."
+          else
+            git commit -m "Import completed CS 465 Travlr project [skip import]"
+            git push
+          fi
