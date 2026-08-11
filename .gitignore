@@ -12,27 +12,36 @@ pids
 *.pid.lock
 
 # Coverage and caches
-coverage
-.nyc_output
-.npm
+coverage/
+.nyc_output/
+.npm/
 .eslintcache
+.angular/
+app_admin/.angular/
 
 # Dependency directories
 node_modules/
+app_admin/node_modules/
 jspm_packages/
 typings/
 
 # Build output
 build/Release
-.next
+dist/
+app_admin/dist/
+.next/
 
 # Environment variables and secrets
 .env
+.env.*
+!.env.example
 
-# IDE files
+# IDE and operating-system files
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+.DS_Store
+Thumbs.db
