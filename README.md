@@ -1,32 +1,17 @@
-<div align="center">
+# Travlr Getaways - Module 5
 
-# Travlr Getaways · Module 5
-### RESTful API Integration
+**Madison Parker**  
+**SNHU CS 465 - Full Stack Development**
 
-**Madison Parker · SNHU CS 465**
+Module Five is where I started working with the trip data through a REST API. I added the API routes and controllers and used Postman to test the requests directly before depending on the frontend.
 
-![Module](https://img.shields.io/badge/Checkpoint-Module_5-2563eb?style=for-the-badge)
-![API](https://img.shields.io/badge/Focus-REST_API-111827?style=for-the-badge)
+## What I worked on
 
-</div>
-
-## Checkpoint Focus
-
-Module Five exposed trip data through RESTful API endpoints and connected the application to MongoDB through the API/controller/model layers. Direct Postman testing made it possible to verify HTTP behavior independently from the frontend.
-
-### Skills represented at this checkpoint
-
-- REST endpoint design
-- GET, POST, PUT, and DELETE methods
-- Express API routes and controllers
+- REST API routes
+- GET, POST, PUT, and DELETE requests
+- API controllers
 - MongoDB-backed JSON responses
-- Postman request/response testing
-- HTTP status-code troubleshooting
+- Postman testing
+- HTTP status codes and request troubleshooting
 
-## Course Progression
-
-`module1` → `module2` → `module3` → `module4` → **module5** → `module6` → `module7` → **final**
-
-The repository was consolidated for the final portfolio so the source remains reviewable from every course branch. The authoritative completed application is on [`main`](https://github.com/Cuthluwu/SNHU-CS465-Travlr), with the completed portfolio mirrored on [`final`](https://github.com/Cuthluwu/SNHU-CS465-Travlr/tree/final).
-
-<div align="center">**Madison Parker · CS 465 Full Stack Development**</div>
+In `module6` I connected the API to the Angular admin application and worked through the CRUD features in the browser.
