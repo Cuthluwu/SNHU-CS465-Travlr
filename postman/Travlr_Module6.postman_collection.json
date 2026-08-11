@@ -1,0 +1,80 @@
+{
+  "info": {
+    "_postman_id": "c5e8202f-f75d-4df7-bab5-5c0832d46506",
+    "name": "Travlr Module Six CRUD Tests",
+    "description": "GET, POST, PUT, and DELETE requests for the CS 465 Module Six Travlr API before the Module Seven JWT security layer was added.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api" },
+    { "key": "tripCode", "value": "TEST2608" }
+  ],
+  "item": [
+    {
+      "name": "GET all trips",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/trips"
+      }
+    },
+    {
+      "name": "POST add trip",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "code", "value": "{{tripCode}}" },
+            { "key": "name", "value": "Madison's Reef" },
+            { "key": "length", "value": "5 nights / 6 days" },
+            { "key": "start", "value": "2026-08-20" },
+            { "key": "resort", "value": "Emerald Coast, 4 stars" },
+            { "key": "perPerson", "value": "1299.00" },
+            { "key": "image", "value": "reef1.jpg" },
+            { "key": "description", "value": "<p>Module Six test trip.</p>" }
+          ]
+        },
+        "url": "{{baseUrl}}/trips"
+      }
+    },
+    {
+      "name": "GET one trip",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/trips/{{tripCode}}"
+      }
+    },
+    {
+      "name": "PUT update trip",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "code", "value": "{{tripCode}}" },
+            { "key": "name", "value": "Madison's Reef Updated" },
+            { "key": "length", "value": "5 nights / 6 days" },
+            { "key": "start", "value": "2026-08-20" },
+            { "key": "resort", "value": "Emerald Coast, 5 stars" },
+            { "key": "perPerson", "value": "1299.00" },
+            { "key": "image", "value": "reef1.jpg" },
+            { "key": "description", "value": "<p>Updated through the Module Six PUT endpoint.</p>" }
+          ]
+        },
+        "url": "{{baseUrl}}/trips/{{tripCode}}"
+      }
+    },
+    {
+      "name": "DELETE test trip",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": "{{baseUrl}}/trips/{{tripCode}}"
+      }
+    }
+  ]
+}
