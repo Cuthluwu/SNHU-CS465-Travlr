@@ -1,44 +1,21 @@
-<div align="center">
+# Travlr Getaways - Module 7
 
-# Travlr Getaways · Module 7
-### Authentication, JWT Security & Protected CRUD
+**Madison Parker**  
+**SNHU CS 465 - Full Stack Development**
 
-**Madison Parker · SNHU CS 465**
+Module Seven was the final security step for the admin application. I added registration and login, generated JWTs after authentication, and protected the API routes that change trip records.
 
-![Module](https://img.shields.io/badge/Checkpoint-Module_7-2563eb?style=for-the-badge)
-![Security](https://img.shields.io/badge/Focus-JWT_Security-7c3aed?style=for-the-badge)
+## What I worked on
 
-</div>
-
-## Checkpoint Focus
-
-Module Seven completed the security layer for the administrator application. Registration and login produce JSON Web Tokens, the Angular application maintains authentication state, and the Express API independently verifies a Bearer token before allowing trip records to be created, updated, or deleted.
-
-### Verified security workflow
-
-| Test | Result |
-|---|---:|
-| Register administrator | **200 OK + JWT** |
-| Administrator login | **200 OK + JWT** |
-| Protected POST without token | **401 Unauthorized** |
-| Protected POST with JWT | **201 Created** |
-| Authenticated SPA update | **Successful** |
-| Protected DELETE with JWT | **200 OK** |
-
-### Skills represented at this checkpoint
-
-- Administrator login form
+- Admin login form
 - Passport authentication
 - Salted password hashing
-- JWT generation and validation
-- Angular authentication service and interceptor
-- Protected server-side POST/PUT/DELETE routes
-- Postman authentication/security testing
+- JWT creation and validation
+- Angular authentication service
+- JWT interceptor for authenticated requests
+- Protected POST, PUT, and DELETE routes
+- Postman security testing
 
-## Course Progression
+For testing, registration and login both returned `200 OK` with a token. A POST without a token returned `401 Unauthorized`, and the authenticated POST returned `201 Created`. I also tested the update through the Angular page and removed the test trip through the protected DELETE request.
 
-`module1` → `module2` → `module3` → `module4` → `module5` → `module6` → **module7** → **final**
-
-For the completed portfolio, documentation, setup instructions, and Module Eight reflection, review [`main`](https://github.com/Cuthluwu/SNHU-CS465-Travlr) or [`final`](https://github.com/Cuthluwu/SNHU-CS465-Travlr/tree/final).
-
-<div align="center">**Madison Parker · CS 465 Full Stack Development**</div>
+The completed project and Module Eight reflection are on `main` and `final`.
