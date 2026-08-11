@@ -1,0 +1,67 @@
+{
+  "info": {
+    "_postman_id": "0f58d648-92d6-4d43-bd37-9a7cab56f465",
+    "name": "Travlr Module Five API Tests",
+    "description": "GET requests for the CS 465 Module Five Travlr REST API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get all trips",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/trips",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "trips"]
+        }
+      }
+    },
+    {
+      "name": "Get Gale Reef by code",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/trips/GALR210214",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "trips", "GALR210214"]
+        }
+      }
+    },
+    {
+      "name": "Test trip not found",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/trips/NOTREAL",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "trips", "NOTREAL"]
+        }
+      }
+    }
+  ]
+}
