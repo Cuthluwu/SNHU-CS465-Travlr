@@ -1,28 +1,34 @@
 # CS 465 Module Eight Journal Reflection
 
 **Madison Parker**  
-**CS 465 — Full Stack Development**
+**CS 465 - Full Stack Development**
 
 ## Architecture
 
-The Travlr Getaways project used several frontend approaches as it developed. I began with the supplied customer-facing HTML, CSS, and JavaScript running through Express. That gave me a stable public site before I changed the architecture. I then moved the customer pages into an Express MVC structure with routes, controllers, Handlebars views, and reusable partials. The administrator side was built as an Angular single-page application, which gave the project more interactive behavior because the trip listing, add form, edit form, and login screen could work through Angular routing and reusable components rather than relying on a new server-rendered page for every action.
+I used two different frontend approaches in Travlr Getaways. The customer-facing site uses Express with HTML, CSS, JavaScript, and Handlebars. It works like a more traditional website where the server renders the page when a route is requested. The administrator side is an Angular single-page application. That side uses components, services, forms, and Angular routing, which made more sense for the add, edit, delete, and login features because the whole page did not need to reload every time I changed something.
 
-The backend used MongoDB because the trip records fit naturally into a document model and the data could move cleanly between MongoDB, Express, and Angular as JSON. Mongoose provided the structure I still needed by defining the Trip schema and required fields. Using one database also meant the public site and administrator SPA were working with the same trip records instead of separate copies of the data.
+MongoDB worked well for the backend because each trip fits naturally into a document and the data could move through the project as JSON. Mongoose gave me schemas and models so the database still had structure. It also meant the customer site and admin site could both use the same trip records instead of keeping separate data.
 
 ## Functionality
 
-JavaScript is the programming language that implements the behavior of the application, while JSON is a data format used to represent and exchange structured values. JSON connected the frontend and backend throughout this project. The first trip data source was a JSON file, and later the Express API returned MongoDB results as JSON to both the public application and Angular SPA.
+JavaScript is the programming language used for the actual logic in the application, while JSON is a format for storing and passing structured data. JSON tied a lot of the project together. Earlier in the course the trip information was stored in JSON, and later the API returned the MongoDB trip records as JSON for the frontend to use.
 
-I refactored the project several times instead of leaving each new feature attached to the original structure. Static trip HTML became a Handlebars loop driven by trip data. Local JSON storage became MongoDB behind a REST API. In Angular, trip rendering was separated into a reusable trip card component, and API calls were centralized in `TripDataService`. During the security module, token handling was separated into `AuthenticationService`, while the JWT interceptor handled adding the Bearer token to authenticated requests. Reusable components and services reduced duplicated code, kept behavior consistent, and made it easier to isolate problems when testing.
+I refactored the project several times as new pieces were added. Repeated static trip HTML became Handlebars templates driven by data. The trip data moved from local JSON into MongoDB. In Angular I used a reusable trip card component and kept the API calls inside `TripDataService`. When security was added, I separated login and token handling into `AuthenticationService` and used the JWT interceptor so the authorization header did not have to be added manually in every component.
+
+Reusable components and services made the project easier to work on because I had fewer places to repeat the same code. It also made troubleshooting easier because each part had a clearer job.
 
 ## Testing
 
-The project helped me understand methods and endpoints as related but separate parts of an API request. The URL identifies the resource, while GET, POST, PUT, and DELETE describe what the client is asking the server to do. I tested the trip endpoints directly in Postman before relying on the Angular UI because that made it easier to determine whether an issue was in the API or the frontend.
+The course made HTTP methods and endpoints much easier for me to understand because I had to use them instead of just read about them. The endpoint is the resource being requested, while GET, POST, PUT, and DELETE describe what I want the server to do with that resource.
 
-Security made testing more specific. A request can contain valid trip data and still need to fail if the user is not authorized. In my final Module Seven test, registration returned HTTP 200 with a JWT, login returned HTTP 200 with a JWT, and a protected POST without a token returned HTTP 401. After authentication, the protected POST returned HTTP 201, the SPA successfully updated the test trip, and the protected DELETE returned HTTP 200. That process showed me why hiding buttons in the frontend is not enough: the server must also protect the write endpoint itself.
+I used Postman to test the API separately from Angular. That was especially helpful once security was added. Registration returned `200 OK` with a JWT, login returned `200 OK` with a JWT, and a protected POST without a token returned `401 Unauthorized`. After authentication, the protected POST succeeded with `201 Created`. I also updated the test trip through the Angular admin page and then deleted it through the protected API, which returned `200 OK`.
+
+The `401` test was important to me because it showed that the security was not just the buttons disappearing from the page. The server itself rejected the write request when there was no valid token.
 
 ## Reflection
 
-This course helped me connect frontend development, backend routing, databases, APIs, and security into one complete workflow. The most useful part was learning to follow a problem through every layer instead of assuming the error was in the first place I noticed it. I became more comfortable checking server logs, HTTP status codes, MongoDB data, browser behavior, and Postman responses as part of the same debugging process.
+CS 465 helped me connect the frontend, backend, database, API, and security pieces into one project. Before this class, I understood a lot of those pieces separately. Travlr made me follow a feature all the way through the browser, Angular service, API route, controller, model, MongoDB, and response.
 
-The skills I developed include Express MVC organization, Handlebars templating, MongoDB and Mongoose, REST API design, Angular components and services, CRUD operations, JSON data flow, Passport authentication, JWT security, Postman testing, and Git branch management. The completed Travlr application is useful in my portfolio because I can explain not only what the code does, but also why the application is separated into layers, how those layers communicate, and how I verified that the administrative security controls work.
+I also got better at debugging because I stopped assuming the first error I saw was the actual problem. I became more comfortable checking the browser, server output, MongoDB data, HTTP status codes, and Postman responses to narrow down where something was failing.
+
+The skills I strengthened in this course include Express MVC structure, Handlebars, MongoDB and Mongoose, REST APIs, Angular components and services, CRUD operations, JSON, Passport, JWT authentication, Postman testing, and Git branch management. Travlr is a project I can actually talk through in a portfolio because I understand how it changed over the course and why each layer was added.
