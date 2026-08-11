@@ -1,31 +1,16 @@
-<div align="center">
+# Travlr Getaways - Module 1
 
-# Travlr Getaways · Module 1
-### Express Foundation & Customer-Facing Site
+**Madison Parker**  
+**SNHU CS 465 - Full Stack Development**
 
-**Madison Parker · SNHU CS 465**
+This branch shows the starting point of my Travlr Getaways project. At this stage I was focused on getting the Node.js and Express application running and working with the supplied customer-facing travel site.
 
-![Module](https://img.shields.io/badge/Checkpoint-Module_1-2563eb?style=for-the-badge)
-![Express](https://img.shields.io/badge/Focus-Express_Website-000000?style=for-the-badge&logo=express&logoColor=white)
+## What I worked on
 
-</div>
-
-## Checkpoint Focus
-
-Module One established the foundation of the Travlr Getaways project. The work centered on the Node.js/Express application structure and the supplied customer-facing travel website before the later database, API, Angular, and security layers were added during the course.
-
-### Skills represented at this checkpoint
-
-- Node.js project setup and npm workflow
+- Node.js and npm setup
 - Express application structure
-- Customer-facing HTML, CSS, JavaScript, and static assets
-- Local development server configuration
-- Git branch workflow for incremental course development
+- Customer-facing HTML, CSS, and JavaScript
+- Static images and other site assets
+- Running and testing the project locally
 
-## Course Progression
-
-`module1` → `module2` → `module3` → `module4` → `module5` → `module6` → `module7` → **final**
-
-The repository was consolidated for the final portfolio so the source remains reviewable from every course branch. The authoritative completed application, security verification, setup instructions, and Module Eight reflection are maintained on [`main`](https://github.com/Cuthluwu/SNHU-CS465-Travlr) and [`final`](https://github.com/Cuthluwu/SNHU-CS465-Travlr/tree/final).
-
-<div align="center">**Madison Parker · CS 465 Full Stack Development**</div>
+This was the base I built on in the later modules. The next branch is `module2`, where I reorganized the site using MVC and Handlebars.
