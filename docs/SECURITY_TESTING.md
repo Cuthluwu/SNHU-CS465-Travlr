@@ -22,9 +22,9 @@ The final security iteration added administrator registration and login, JWT cre
 
 ## Why the 401 Test Matters
 
-The Angular application hides Add, Edit, and Delete controls when a user is logged out, but interface controls alone are not a security boundary. The backend route middleware independently checks for a valid Bearer token before POST, PUT, or DELETE operations are allowed.
+The Angular application hides Add, Edit, and Delete controls when a user is logged out, and the Add/Edit components redirect to the login page when opened without an active token. Those interface controls improve the user experience, but they are not the security boundary.
 
-The rejected unauthenticated POST demonstrated that direct access to the API still fails even if someone bypasses the Angular interface. After login, the authenticated request succeeded using the JWT returned by the API.
+The backend route middleware independently checks for a valid Bearer token before POST, PUT, or DELETE operations are allowed. The rejected unauthenticated POST demonstrated that direct access to the API still fails even if someone bypasses the Angular interface. After login, the same type of request succeeded using the JWT returned by the API.
 
 ## Protected Routes
 
@@ -40,12 +40,26 @@ A valid request uses:
 Authorization: Bearer <JWT>
 ```
 
-The trip GET routes remain public so both the customer-facing Express site and the Angular application can retrieve the available packages without requiring administrator authentication.
+The trip GET routes remain public so the customer-facing Express site and Angular application can retrieve available packages without administrator authentication.
 
-## Postman Collection
+## Repository Protection Notes
 
-The final request sequence is available in:
+The public portfolio intentionally excludes local secrets and runtime credentials:
 
-`postman/Travlr_Module7_Security.postman_collection.json`
+- `.env` is ignored by Git.
+- `.env.example` contains placeholders only.
+- The Module Seven Postman collection uses a mock `@travlr.test` email address and a mock password intended only for localhost testing.
+- The Postman token variable is committed empty and is populated at runtime after successful authentication.
+- No JWT captured during testing is stored in the repository.
 
-The collection contains registration, login, public GET, unauthorized POST, authenticated POST, authenticated PUT, and authenticated DELETE requests.
+The project implements the security controls required for the CS 465 course. For a production system I would additionally restrict administrator account provisioning, use HTTPS-only deployment controls, add rate limiting and monitoring, and review browser token storage against the deployment threat model.
+
+## Postman Collections
+
+The repository includes the API testing progression used across the final modules:
+
+- `Travlr_Module5.postman_collection.json` — GET endpoint verification
+- `Travlr_Module6.postman_collection.json` — pre-security CRUD workflow
+- `Travlr_Module7_Security.postman_collection.json` — registration, login, JWT authorization, rejected unauthenticated writes, and authenticated CRUD
+
+The Module Seven collection is the authoritative collection for testing the final secured application.
